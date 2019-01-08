@@ -87,7 +87,7 @@ select name,category,aff_role,country
 from nobel
 where (name like 'A%' or name like '%a' ) and country not in ('Isreal');
 
-REM 6. Display the name, gender, affiliation, dob and country of laureates who was born in 1950's.
+REM 6. Display the name, gender, affiliation, dob and country of laureates who was born in 1950s.
 REM    Label the dob column as Born 1950.
 
 select name, gender, aff_role, dob as born_on_1950,country
