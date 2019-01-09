@@ -2,7 +2,7 @@
 REM ***SSN COLLEGE OF ENGINEERING***
 REM ***DEPARTMENT OF COMPUTER SCIENCE ENGINEERING***
 REM ***DATABASE MANAGEMENT SYSTEMS LAB***
-REM ***Assignment 1: DdL Fundamentals***
+REM ***Assignment 1: DDL Fundamentals***
 
 REM ***Drop existing  tables***
 Drop table order_details;
