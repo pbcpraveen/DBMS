@@ -145,7 +145,7 @@ where category = 'lit';
 delete from nobel 
 where field = 'Enzymes';
 
-rollback point;
+rollback to point;
 
 commit;
 
