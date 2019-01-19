@@ -140,12 +140,18 @@ insert into nobel values(200,'Praveen Kumar','m','Phy','Linear algebra',2001,'An
 
 update nobel
 set aff_role='linguists'
-where category = 'lit';
+where category = 'Lit';
+
+Select * from nobel;
 
 delete from nobel 
 where field = 'Enzymes';
 
 rollback to point;
+
+Select *
+ from nobel
+ where field = 'Enzymes';
 
 commit;
 
