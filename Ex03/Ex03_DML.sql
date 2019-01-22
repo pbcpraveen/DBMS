@@ -55,12 +55,38 @@ where rno in (select rno
 REM 6. Display the receipt number(s) and its total price for the receipt(s) that contain Twist 
 REM    as one among five items. Include only the receipts with total price more than $25.
 
-SELECT item_list.rno, sum(p1.price)
-from products p1 join item_list i2 on p1.pid = item_list.item
-where 'twist' in (select i1.item
-				  from item_list i1
-				  where i1.rno = i2.rno )
-group by item_list.rno 
+SELECT i2.rno, sum(p1.price)
+from products p1 join item_list i2 on p1.pid = i2.item
+where (select pid from products where flavor = 'Twist') in (select i1.item
+                                                          from item_list i1
+                                                           where i1.rno = i2.rno
+)
+group by i2.rno
 having sum(p1.price)>25;
-			
-			
+
+
+
+REM 7. Display the receipt no having the same productid in the same ordinal position
+
+select l1.rno
+from  item_list l1
+where l1.ordinal in (select l2.ordinal 
+                   from item_list l2
+				    where l1.rno = l2.rno)
+and l1.item in (select l3.item
+                from item_list l3
+                 where l1.rno != l3.rno and l1.ordinal = l3.ordinal)
+group by l1.rno;
+REM doubt
+
+REM 8. Display the list of customers who purchased baked food of Chocolate and
+REM    Apricot flavor for more than once.
+
+select c1.cid 
+from customers c1 join receipts r1 on c1.cid = r1.cid
+where r1.rno = any(select i1.rno from item_list i1 join products p1 on p1.pid = i1.item
+                   where  p1.food = 'Chocolate')
+and r1.rno = any (select i1.rno from item_list i1 join products p1 on p1.pid = i1.item
+                   where  p1.food = 'Apricot')
+group by c1.cid 
+having count(*)>1;
