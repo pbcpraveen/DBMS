@@ -21,8 +21,8 @@ fname char(20)
 
 create table products(
 pid varchar2(15) constraint pid_pk primary key,
-food char(20) ,
-flavor char(20),
+flavor char(20) ,
+food char(20),
 price decimal(5,2)
 );
 
@@ -621,18 +621,18 @@ select c.*, r1.rno
 from customers c join Receipts r1 on(r1.cid=c.cid) 
 where r1.rno in ( select r2.rno
                  from Receipts r2 join item_list i on(r2.rno = i.rno) join products p on(p.pid = i.item)
-                 where p.flavor = 'Meringue' 
+                 where p.food = 'Meringue' 
 				 group by r2.rno 
 				 having count(distinct flavor) = (select count(distinct flavor)
                                   				 from products 
-												 where flavor = 'Meringue'));
+												 where food = 'Meringue'));
 												 
 												 
 REM 9. Display the product details of both Pie and Bear Claw.
 
-(select * from products where flavor = 'Pie') 
+(select * from products where food = 'Pie') 
 union 
-(select * from products where flavor = 'Bear Claw');
+(select * from products where food = 'Bear Claw');
 
 
 REM 10. Display the customers details who havent placed any orders.
@@ -649,14 +649,14 @@ where cid in((select cid
 			
 REM 11. Display food with flavor common to Meringue and Tart
 
-select flavor
+select food
 from products 
-where food  in (select food
+where flavor  in (select flavor
                 from products 
-				where flavor='Meringue' 
+				where food='Meringue' 
 				intersect
-               select food 
+               select flavor 
 			   from products 
-			   where flavor='Tart') 
-and flavor not in ('Meringue' ,'Tart');
+			   where food='Tart') 
+and food not in ('Meringue' ,'Tart');
 			
