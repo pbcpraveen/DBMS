@@ -579,13 +579,8 @@ REM : 5. Display the customer details along with receipt number and date for the
 REM      are dated on the last day of the receipt month.
 
 SELECT *
-FROM customers join receipts on customers.cid = receipts.cid
-where rno in (select rno 
-			from receipts parent
-			where r_date in (select max(r_date)
-			                    from receipts child
-								where extract(month from parent.r_date)=extract(month from child.r_date)
-								and extract(year from parent.r_date)=extract(year from child.r_date)));
+FROM customers join receipts r on customers.cid = r.cid
+where r.date = last_day(r.date);
 								
 REM 6. Display the receipt number(s) and its total price for the receipt(s) that contain Twist
 REM     as one among five items. Include only the receipts with total price more than $25.
