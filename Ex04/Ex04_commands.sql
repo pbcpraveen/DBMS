@@ -78,9 +78,9 @@ where i.item = any(select i2.item
 group by i.item);
 select COLUMN_NAME, UPDATABLE from USER_UPDATABLE_COLUMNS where table_name = 'HOT_FOOD';
 
-update cheap_food 
-set price = price+2 
-where food = 'icecream';
+update hot_food 
+set quantity = quantity+2 
+where item = '46-11';
 
 REM 4. Create a view named Pie_Food that will display the details (customer lname, flavor,
 REM    receipt number and date, ordinal) who had ordered the Pie food with receipt details.
