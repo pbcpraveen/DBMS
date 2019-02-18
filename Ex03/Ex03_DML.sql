@@ -578,9 +578,10 @@ group by rno;
 REM : 5. Display the customer details along with receipt number and date for the receipts that 
 REM      are dated on the last day of the receipt month.
 
-SELECT *
-FROM customers join receipts r on customers.cid = r.cid
-where r.date = last_day(r.date);
+select count(distinct rno) as number_of_receipts from item_list where item in 
+(select pid from products p1 where price > 
+(select avg(price) from products p2 group by food having p1.food = p2.food)) group by rno;
+
 								
 REM 6. Display the receipt number(s) and its total price for the receipt(s) that contain Twist
 REM     as one among five items. Include only the receipts with total price more than $25.
@@ -612,16 +613,10 @@ REM 8.Display the customer details along with the receipt number who ordered all
 REM flavors of Meringue in the same receipt.
 
 
-select c.*, r1.rno 
-from customers c join Receipts r1 on(r1.cid=c.cid) 
-where r1.rno in ( select r2.rno
-                 from Receipts r2 join item_list i on(r2.rno = i.rno) join products p on(p.pid = i.item)
-                 where p.food = 'Meringue' 
-				 group by r2.rno 
-				 having count(distinct flavor) = (select count(distinct flavor)
-                                  				 from products 
-												 where food = 'Meringue'));
-												 
+select c.*, r1.rno from customers c join Receipts r1 on(r1.cid=c.cid) 
+where r1.rno = ( select r2.rno from Receipts r2 join item_list i on(r2.rno = i.rno) join products p on(p.pid = i.item)
+where p.food = 'Meringue' group by r2.rno having count(distinct flavor) = 
+(select count(distinct flavor) from products where food = 'Meringue'));												 
 												 
 REM 9. Display the product details of both Pie and Bear Claw.
 
