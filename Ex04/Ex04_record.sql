@@ -169,6 +169,34 @@ SQL> create view hot_food as (
 
 View created.
 
+SQL> select * from hot_food;
+
+ITEM                 COUNT                                                      
+--------------- ----------                                                      
+70-R                     2                                                      
+90-APR-PF                2                                                      
+50-APP                   2                                                      
+51-ATW                   2                                                      
+90-ALM-I                 2                                                      
+90-BER-11                2                                                      
+90-PEC-11                2                                                      
+70-M-CH-DZ               2                                                      
+46-11                    2                                                      
+70-M-CH-DZ               2                                                      
+90-CHR-11                2                                                      
+
+ITEM                 COUNT                                                      
+--------------- ----------                                                      
+90-BLU-11                2                                                      
+50-CHS                   2                                                      
+70-M-CH-DZ               2                                                      
+70-R                     2                                                      
+90-APP-11                2                                                      
+70-MAR                   2                                                      
+50-APR                   2                                                      
+51-BC                    2                                                      
+50-ALM                   2                                                      
+
 SQL> select COLUMN_NAME, UPDATABLE from USER_UPDATABLE_COLUMNS where table_name = 'HOT_FOOD';
 
 COLUMN_NAME                    UPD                                              
@@ -177,12 +205,36 @@ ITEM                           NO
 QUANTITY                       NO                                               
 
 SQL> 
-SQL> insert into hot_food values ('A-B-c',3);
-insert into hot_food values ('A-B-c',3)
-*
-ERROR at line 1:
-ORA-01733: virtual column not allowed here 
+SQL>insert into item_list values(67341, 7,'51-BLU');
 
+1 row created.
+SQL> select * from hot_food;
+
+ITEM                 COUNT                                                      
+--------------- ----------                                                      
+70-R                     2                                                      
+90-APR-PF                2                                                      
+50-APP                   2                                                      
+51-ATW                   2                                                      
+90-ALM-I                 2                                                      
+90-BER-11                2                                                      
+90-PEC-11                2                                                      
+70-M-CH-DZ               2                                                      
+46-11                    2                                                      
+70-M-CH-DZ               2                                                      
+90-CHR-11                2                                                      
+
+ITEM                 COUNT                                                      
+--------------- ----------                                                      
+90-BLU-11                2                                                      
+50-CHS                   2                                                      
+70-M-CH-DZ               2                                                      
+70-R                     2                                                      
+90-APP-11                2                                                      
+51-BLU                   2                                                      
+50-APR                   2                                                      
+51-BC                    2                                                      
+50-ALM                   2          
 
 SQL> 
 SQL> delete from hot_food
@@ -217,13 +269,25 @@ View created.
 SQL> 
 SQL> select * from pie_food;
 
-LNAME                FLAVOR                      RNO R_DATE       ORDINAL       
--------------------- -------------------- ---------- --------- ----------       
-SOPKO                Apple                     51991 17-OCT-07          1       
-CRUZEN               Apple                     44798 04-OCT-07          3       
-SOPKO                Apple                     29226 26-OCT-07          2       
-LOGAN                Apple                     66227 10-OCT-07          2       
+LNAME                FLAVOR                 RNO RDATE        ORDINAL            
+-------------------- --------------- ---------- --------- ----------            
+SOPKO                Apple                51991 17-OCT-07          1            
+CRUZEN               Apple                44798 04-OCT-07          3            
+SOPKO                Apple                29226 26-OCT-07          2            
+LOGAN                Apple                66227 10-OCT-07          2            
+HELING               Apple                53376 30-OCT-07          3            
+LOGAN                Apple                39685 28-OCT-07          4            
+HAFFERKAMP           Apple                50660 18-OCT-07          2            
+CRUZEN               Apple                39109 02-OCT-07          1            
+MESDAQ               Apple                98806 15-OCT-07          3            
+SLINGLAND            Apple                47353 12-OCT-07          2            
+SLINGLAND            Apple                87454 21-OCT-07          1            
 
+LNAME                FLAVOR                 RNO RDATE        ORDINAL            
+-------------------- --------------- ---------- --------- ----------            
+ESPOSITA             Apple                48647 09-OCT-07          2            
+ARNN                 Apple                11548 21-OCT-07          2    
+        
 SQL> select COLUMN_NAME, UPDATABLE from USER_UPDATABLE_COLUMNS where table_name = 'PIE_FOOD';
 
 COLUMN_NAME                    UPD                                              
@@ -241,17 +305,41 @@ insert into pie_food values('praven','berry',6483,'20-Jan-2005',7)
 ERROR at line 1:
 ORA-01779: cannot modify a column which maps to a non key-preserved table 
 
+SQL> insert into Customers
+  2  values(114,'Praveen','Kumar');
+
+1 row created.
+
+SQL> insert into item_list
+  2  values(50660, 7,  '70-W');
+  
+1 row created.
 
 SQL> delete from pie_food
   2  where flavor = 'berry';
 
-0 rows deleted.
+SQL> select * from Pie_Food;
 
-SQL> update pie_food
-  2  set ordinal = ordinal+1
-  3  where flavor = 'berry';
+LNAME                FLAVOR                 RNO RDATE        ORDINAL            
+-------------------- --------------- ---------- --------- ----------            
+SOPKO                Apple                51991 17-OCT-07          1            
+CRUZEN               Apple                44798 04-OCT-07          3            
+SOPKO                Apple                29226 26-OCT-07          2            
+LOGAN                Apple                66227 10-OCT-07          2            
+HELING               Apple                53376 30-OCT-07          3            
+LOGAN                Apple                39685 28-OCT-07          4            
+HAFFERKAMP           Apple                50660 18-OCT-07          2            
+CRUZEN               Apple                39109 02-OCT-07          1            
+MESDAQ               Apple                98806 15-OCT-07          3            
+SLINGLAND            Apple                47353 12-OCT-07          2            
+SLINGLAND            Apple                87454 21-OCT-07          1            
 
-0 rows updated.
+LNAME                FLAVOR                 RNO RDATE        ORDINAL            
+-------------------- --------------- ---------- --------- ----------            
+ESPOSITA             Apple                48647 09-OCT-07          2            
+ARNN                 Apple                11548 21-OCT-07          2            
+
+13 rows selected.
 
 SQL> 
 SQL> REM 5. Create a view Cheap_View from Cheap_Food that shows only the product id, flavor
@@ -292,28 +380,31 @@ SQL> update cheap_view
 1 row updated.
 
 SQL> 
-SQL> select * form cheap_view;
-select * form cheap_view
-         *
-ERROR at line 1:
-ORA-00923: FROM keyword not found where expected 
 
-
-SQL> 
 SQL> select * from cheap_food;
 
 PID             FLAVOR               FOOD                      PRICE            
 --------------- -------------------- -------------------- ----------            
 70-LEM          Lemon                Cookie                      .79            
 70-W            Walnut               Cookie                      .79            
-Ac-RD-HG        grapes               fondant                     .65            
-
+Ac-RD-HG        grapes               fondant                     .65       
+     
+3 row created.
 SQL> 
 SQL> delete from cheap_food
   2  where pid= 'Ac-RD-HG';
 
 1 row deleted.
 
+SQL> select * from cheap_food;
+
+PID             FLAVOR               FOOD                      PRICE            
+--------------- -------------------- -------------------- ----------            
+70-LEM          Lemon                Cookie                      .79            
+70-W            Walnut               Cookie                      .79            
+     
+2 row created.
+SQL> 
 SQL> 
 SQL> 
 SQL> REM 6. Create a sequence named Ordinal_No_Seq which generates the ordinal number
@@ -407,18 +498,15 @@ SQL> select *
 
 SQL> 
 SQL> insert into product_details values(insert into item_list values(91937, 8,	'51-BC');
-insert into product_details values(insert into item_list values(91937, 8,  '51-BC')
-                                   *
-ERROR at line 1:
-ORA-00936: missing expression 
+                                   
+1 row created.
 
 
 SQL> 
 SQL> update product_details
   2  set ordinal = ordinal+1
   3  where rno=91937 and ordinal = 8;
-
-0 rows updated.
+1 rows updated.
 
 SQL> 
 SQL> select * from item_list
@@ -428,12 +516,13 @@ SQL> select * from item_list
 ---------- ---------- --------------------                                      
      91937          1 51-BC                                                     
      91937          2 51-APR                                                    
+     91937          9 51-BC                                                    
 
 SQL> 
 SQL> delete from product_details
   2  where rno = 91937 and ordinal = 8;
 
-0 rows deleted.
+1 rows deleted.
 
 SQL> 
 SQL> 
