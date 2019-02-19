@@ -1,26 +1,117 @@
-drop view itemno;
-create view itemno as select item_list.rno, receipts.r_date, item_list.ordinal from item_list JOIN receipts on item_list.rno=receipts.rno;
-
-create or replace procedure item_selector(d IN receipts.r_date%type) IS
-begin	
-	UPDATE itemno r 
-	SET r.ordinal = r.ordinal+0	
-	where r.r_date=d ;
-	end;
-declare 
-datesearch receipts.r_date%type;
+REM 1. Check whether the given combination of food and flavor is available. If any one or
+REM    both are not available, display the relevant message.
+set serveroutput on;
+create or replace procedure select_1(fl IN products.flavor%type, fo IN products.food%type, count_1 OUT integer) IS 
 begin
-	datesearch :=&datesearch;
-	item_selector(datesearch);
-	if SQL%found then
-		dbms_output.put_line('Number of Items sold on '||datesearch||' are :'||SQL%ROWCOUNT);
-	else 
-		dbms_output.put_line('No Items sold');
+	select count(*) into count_1
+	from (select pid from products 
+	where food=fo and flavor=fl);
+end;
+/
+declare
+fl products.flavor%type;
+fo products.food%type;
+c number(3);
+begin	
+	fl := &flavor;
+	fo := &food;
+	select_1(fl,fo,c);
+	if SQL%found and c>0 then
+		dbms_output.put_line(c||' found');
+	else
+		dbms_output.put_line('Not found');
 	end if;
 end;
+/
+REM 2. On a given date, find the number of items sold (Use Implicit cursor).
+create or replace procedure select_2(date_1 IN receipts.r_date%type, count_1 OUT integer) IS 
+begin
+	select count(*) into count_1
+	from (select r_date from item_list i join receipts r on r.rno=i.rno 
+	where r.r_date=date_1);
+end;
+/
+declare
+date_search receipts.r_date%type;
+c number(3);
+begin	
+	date_search := &date_search;
+	select_2(date_search,c);
+	if SQL%found and c>0 then
+		dbms_output.put_line('No. of items sold on '||date_search||' is/are:'||c);
+	else
+		dbms_output.put_line('No items sold');
+	end if;
+end;
+/
+
+REM 3. An user desired to buy the product with the specific price. Ask the user for a price,
+REM find the food item(s) that is equal or closest to the desired price. Print the product
+REM number, food type, flavor and price. Also print the number of items that is equal or
+REM closest to the desired price.
 
 
+declare
+inputprice products.price%type;
+CURSOR c1 is select * from products 
+where abs(price-inputprice) in (select min(abs(p.price-inputprice))
+                              from products p
+							  ) ;
+counts integer;
+ex_product products%rowtype;
+begin
+inputprice := &inputprice;
+open c1;
+select count(*) into counts
+from (select * from products 
+where abs(price - inputprice) in (select min(abs(p.price-inputprice))
+                              from products p));
+for count in 1..counts loop
+            fetch c1 into ex_product.pid,ex_product.flavor,ex_product.food,ex_product.price;
+            dbms_output.put_line(ex_product.pid||'  '||ex_product.flavor||'  '||ex_product.food||' '||ex_product.price );
+    end loop;
+end;
+/
+REM 4. Display the customer name along with the details of item and its quantity ordered for
+REM    the given order number. Also calculate the total quantity ordered as shown below:
+
+
+declare 
+cust_name1 customers.lname%type;
+cust_name2 customers.fname%type;
+qty integer;
+rec_sel receipts.rno%type;
+counts integer;
+food_sel products.food%type;
+flavor_sel products.flavor%type;
+qtys integer;
+cursor c1 is select food, flavor, count(*) as qty 
+from products p join item_list i on i.item = p.pid
+where i.rno = rec_sel 
+group by (p.food,p.flavor);
+cursor c2 is select fname,lname from customers c join receipts r on r.cid = c.cid
+where rno = rec_sel ;
+
+begin
+rec_sel := &rec_sel;
+select count(count(*)) into counts from products p join item_list i on i.item = p.pid 
+where i.rno = rec_sel
+group by (p.food,p.flavor);
+select sum(count(*)) into qty from products p join item_list i on i.item = p.pid 
+where i.rno = rec_sel
+group by (p.food,p.flavor);
+open c1;
+open c2;
+fetch c2 into cust_name1,cust_name2;
+dbms_output.put_line('Customer name: '||cust_name1||' '||cust_name2); 
+dbms_output.put_line('FOOD FLAVOR QUANTITY');
+dbms_output.put_line('------------------------------------------');
+for count in 1..counts loop
+            fetch c1 into food_sel,flavor_sel,qtys;
+            dbms_output.put_line(flavor_sel||' '||food_sel||' '||qtys);
+    end loop;
 	
-		
-	
-	
+dbms_output.put_line('------------------------------------------');
+dbms_output.put_line('Total Quantity='||qty);
+end;
+/
