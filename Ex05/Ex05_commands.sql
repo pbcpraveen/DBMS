@@ -5,28 +5,25 @@ set serveroutput on;
 declare
 fl products.flavor%type;
 fo products.food%type;
-c1 number(3);
-c2 number(3);
-c3 number(3);
 
 begin	
-	fl := &flavor;
-	fo := &food;
-	select count(*) into c1
-	from (select * from products p where p.food = fo and p.flavor = fl);
-    select count(*) into c2
-	from (select * from products p where p.flavor = fl);
-    select count(*) into c3
-	from (select * from products p where p.food = fo);
-	if c1>0 then
-		dbms_output.put_line(c1||' products found of given combination');
+	fl := '&flavor';
+	fo := '&food';
+	update products p set p.price = p.price+0 
+	where p.food = fo and p.flavor = fl;
+	if SQL%rowcount>0 then
+		dbms_output.put_line(sql%rowcount||' products found of given combination');
 		return;
 	end if;
-    if c2>0 then
+	update products p set p.price = p.price+0 
+	where p.flavor = fl;
+    if SQL%rowcount>0 then
 		dbms_output.put_line('only flavor is found');
 		return;
 		end if;
-	if c3>0 then
+	update products p set p.price = p.price+0
+	where p.food = fo;
+	if SQL%rowcount>0  then
 		dbms_output.put_line('only food is found');
 		return;
 		end if;
