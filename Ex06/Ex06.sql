@@ -81,7 +81,7 @@ dbms_output.put_line('SNO    FOOD           FLAVOR         ');
 dbms_output.put_line('******************************************');
 for a in 1..counts loop
             fetch c1 into food_sel,flavor_sel,lprice;
-            dbms_output.put_line(' '||a||' '||flavor_sel||' '||food_sel);
+            dbms_output.put_line(' '||a||' '||flavor_sel||' '||food_sel||' '||lprice);
 end loop;
 discount(cp,d,dp,sp);
 dbms_output.put_line('******************************************');
