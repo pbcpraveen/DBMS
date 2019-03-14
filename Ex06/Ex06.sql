@@ -77,7 +77,7 @@ dbms_output.put_line('Customer name: '||custfname||' '||custlname);
 dbms_output.put_line('Receipt No.: '||sel);
 dbms_output.put_line('Receipt date: '||billdate);
 dbms_output.put_line('******************************************');
-dbms_output.put_line('SNO    FOOD           FLAVOR         ');
+dbms_output.put_line('SNO    FOOD           FLAVOR        PRICE ');
 dbms_output.put_line('******************************************');
 for a in 1..counts loop
             fetch c1 into food_sel,flavor_sel,lprice;
