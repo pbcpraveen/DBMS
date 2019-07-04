@@ -5,7 +5,7 @@ SQL> REM ***DEPARTMENT OF COMPUTER SCIENCE ENGINEERING***
 SQL> REM ***DATABASE MANAGEMENT SYSTEMS LAB***
 SQL> REM ***Assignment 1: DdL Fundamentals***
 SQL> 
-SQL> REM ***Drop existing  tables***
+SQL> REM ***Droping  existing  tables***
 SQL> Drop table order_details;
 
 Table dropped.
